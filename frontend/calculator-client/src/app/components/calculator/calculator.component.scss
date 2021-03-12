@@ -1,0 +1,26 @@
+.container {
+  display: grid;
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+
+  mat-form-field {
+    width: 100%;
+    max-width: 150px;
+    margin: auto;
+  }
+
+  button {
+    width: 150px;
+    margin: 1rem auto;
+  }
+
+  .results {
+    margin: 1rem 0;
+
+    button {
+      margin: 0 1rem;
+    }
+  }
+}

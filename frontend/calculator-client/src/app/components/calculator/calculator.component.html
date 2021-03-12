@@ -1,0 +1,24 @@
+<div class="container">
+  <mat-form-field>
+    <mat-label>Montant désiré</mat-label>
+    <input type="number" matInput required placeholder="20" [(ngModel)]="value" (ngModelChange)="dirty = true">
+  </mat-form-field>
+
+  <button [disabled]="!dirty" type="button" color="accent" mat-raised-button (click)="onValidateClick()">Valider</button>
+
+  <div class="results" *ngIf="apiResults">
+    <ng-container *ngIf="apiResults.equal; else choice">
+      <p>Votre montant est composé des cartes suivantes :</p>
+      <mat-list>
+        <mat-list-item *ngFor="let card of apiResults.equal.cards">{{ card }} €</mat-list-item>
+      </mat-list>
+    </ng-container>
+    <ng-template #choice>
+      <p>Le montant que vous avez saisi n'est pas disponible, veuillez choisir parmi les propositions suivantes :</p>
+      <mat-selection-list [multiple]="false">
+        <mat-list-option *ngIf="apiResults.ceil" (click)="patchAmount(apiResults.ceil.value)">{{ apiResults.ceil.cards | concatCards }}</mat-list-option>
+        <mat-list-option *ngIf="apiResults.floor" (click)="patchAmount(apiResults.floor.value)">{{ apiResults.floor.cards | concatCards}}</mat-list-option>
+      </mat-selection-list>
+    </ng-template>
+  </div>
+</div>

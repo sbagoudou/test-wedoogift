@@ -9,4 +9,7 @@ export class AppComponent {
 
   title = 'calculator-client';
 
+  onValueChange(amount: number): void {
+    console.log(`Amount change event received: ${amount} €`);
+  }
 }
