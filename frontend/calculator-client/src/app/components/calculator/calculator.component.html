@@ -1,8 +1,14 @@
 <div class="container">
-  <mat-form-field>
-    <mat-label>Montant désiré</mat-label>
-    <input type="number" matInput required placeholder="20" [(ngModel)]="value" (ngModelChange)="dirty = true">
-  </mat-form-field>
+  <div class="inputs">
+    <mat-form-field>
+      <mat-label>Montant désiré</mat-label>
+      <input type="number" matInput required placeholder="20" [(ngModel)]="value" (ngModelChange)="dirty = true">
+    </mat-form-field>
+    <div class="next-buttons">
+      <button type="button" mat-raised-button color="warn" [disabled]="isMax" (click)="computeNextValue('plus')">+</button>
+      <button type="button" mat-raised-button color="warn" [disabled]="isMin" (click)="computeNextValue('minus')">-</button>
+    </div>
+  </div>
 
   <button [disabled]="!dirty" type="button" color="accent" mat-raised-button (click)="onValidateClick()">Valider</button>
 

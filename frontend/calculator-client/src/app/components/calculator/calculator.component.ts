@@ -15,6 +15,10 @@ export class CalculatorComponent implements OnInit, OnDestroy {
 
   value = 20;
   dirty = true;
+
+  isMin = false;
+  isMax = false;
+
   apiResults?: CalculatorResult;
 
   private destroy: Subject<void> = new Subject<void>();
@@ -62,6 +66,41 @@ export class CalculatorComponent implements OnInit, OnDestroy {
   patchAmount(value: number): void {
     this.value = value;
     this.onValidateClick();
+  }
+
+  computeNextValue(sign: string): void {
+    let nextValue = 0;
+
+    switch (sign) {
+      case 'plus':
+        nextValue = this.value + 1;
+        break;
+      case 'minus':
+        nextValue = this.value - 1;
+        break;
+    }
+
+    this.wedoogiftApiService
+      .getCombination$(5, nextValue)
+      .pipe(takeUntil(this.destroy))
+      .subscribe((res: CalculatorResult) => {
+        if (res) {
+          this.isMin = res.ceil && !res.floor;
+          this.isMax = res.floor && !res.ceil;
+          switch (sign) {
+            case 'plus':
+              if (res.ceil) {
+                this.patchAmount(res.ceil.value);
+              }
+              break;
+            case 'minus':
+              if (res.floor) {
+                this.patchAmount(res.floor.value);
+              }
+              break;
+          }
+        }
+      });
   }
 
 }
