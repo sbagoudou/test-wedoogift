@@ -2,15 +2,15 @@
   <div class="inputs">
     <mat-form-field>
       <mat-label>Montant désiré</mat-label>
-      <input type="number" matInput required placeholder="20" [(ngModel)]="value" (ngModelChange)="dirty = true">
+      <input type="number" matInput required placeholder="20" [(ngModel)]="value" (ngModelChange)="dirty = true; onChange(null); apiResults = undefined;" [disabled]="disabled">
     </mat-form-field>
     <div class="next-buttons">
-      <button type="button" mat-raised-button color="warn" [disabled]="isMax" (click)="computeNextValue('plus')">+</button>
-      <button type="button" mat-raised-button color="warn" [disabled]="isMin" (click)="computeNextValue('minus')">-</button>
+      <button type="button" mat-raised-button color="warn" [disabled]="isMax || disabled" (click)="computeNextValue('plus')">+</button>
+      <button type="button" mat-raised-button color="warn" [disabled]="isMin || disabled" (click)="computeNextValue('minus')">-</button>
     </div>
   </div>
 
-  <button [disabled]="!dirty" type="button" color="accent" mat-raised-button (click)="onValidateClick()">Valider</button>
+  <button [disabled]="!value || !dirty || disabled" type="button" color="accent" mat-raised-button (click)="onValidateClick()">Valider</button>
 
   <div class="results" *ngIf="apiResults">
     <ng-container *ngIf="apiResults.equal; else choice">

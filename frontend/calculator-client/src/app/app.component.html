@@ -1,4 +1,21 @@
 <mat-toolbar color="primary">WeDooGift frontend challenge - Jeremie BAILLEUL</mat-toolbar>
-<mat-card>
-  <app-calculator (valueChange)="onValueChange($event)"></app-calculator>
-</mat-card>
+<form [formGroup]="form">
+  <mat-card>
+    <mat-card-title>Identité</mat-card-title>
+    <mat-form-field>
+      <mat-label>Prénom</mat-label>
+      <input type="text" matInput required placeholder="John" formControlName="firstName">
+      <mat-error *ngIf="form.controls.firstName.errors">Le prénom est obligatoire</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Nom</mat-label>
+      <input type="text" matInput required placeholder="Smith" formControlName="lastName">
+      <mat-error *ngIf="form.controls.lastName.errors">Le nom est obligatoire</mat-error>
+    </mat-form-field>
+  </mat-card>
+  <mat-card>
+    <mat-card-title>Montant de carte cadeau</mat-card-title>
+    <app-calculator formControlName="amount"></app-calculator>
+    <mat-error *ngIf="form.controls.amount.errors">Le montant est obligatoire</mat-error>
+  </mat-card>
+</form>

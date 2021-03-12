@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, forwardRef, OnDestroy, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CalculatorResult } from '../../models/calculator-result';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -7,11 +8,18 @@ import { WedoogiftApiService } from '../../services/http/wedoogift-api.service';
 @Component({
   selector: 'app-calculator',
   templateUrl: './calculator.component.html',
-  styleUrls: ['./calculator.component.scss']
+  styleUrls: ['./calculator.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CalculatorComponent),
+      multi: true
+    }
+  ]
 })
-export class CalculatorComponent implements OnInit, OnDestroy {
+export class CalculatorComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
-  @Output() valueChange: EventEmitter<number> = new EventEmitter<number>();
+  private destroy: Subject<void> = new Subject<void>();
 
   value = 20;
   dirty = true;
@@ -21,7 +29,10 @@ export class CalculatorComponent implements OnInit, OnDestroy {
 
   apiResults?: CalculatorResult;
 
-  private destroy: Subject<void> = new Subject<void>();
+  disabled = false;
+
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   constructor(private wedoogiftApiService: WedoogiftApiService) {}
 
@@ -36,6 +47,7 @@ export class CalculatorComponent implements OnInit, OnDestroy {
 
   onValidateClick(): void {
     this.dirty = false;
+    this.onChange(null);
 
     this.wedoogiftApiService
       .getCombination$(5, this.value)
@@ -54,7 +66,7 @@ export class CalculatorComponent implements OnInit, OnDestroy {
 
           if (this.apiResults.equal) {
             // Case #4 : the desired amount is possible
-            this.valueChange.emit(this.value);
+            this.onChange(this.value);
           }
         }
       }, (error: any) => {
@@ -101,6 +113,22 @@ export class CalculatorComponent implements OnInit, OnDestroy {
           }
         }
       });
+  }
+
+  writeValue(value: number): void {
+    this.value = value;
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 
 }
